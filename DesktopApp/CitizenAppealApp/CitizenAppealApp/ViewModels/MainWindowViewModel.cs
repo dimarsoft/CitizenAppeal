@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+//using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -8,18 +8,21 @@ using ReactiveUI;
 
 namespace CitizenAppealApp.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase
+public sealed class MainWindowViewModel : ReactiveObject
 {
     private string _email;
     private string _appealText;
     private string _lastErrorText;
     private bool _isSendInProgress;
+    private string _serverUrl;
 
     public ICommand SendAppealCommand { get; }
 
     public MainWindowViewModel()
     {
         SendAppealCommand = ReactiveCommand.CreateFromTask(SendAppealToServerAsync);
+
+        ServerUrl = "https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize";
     }
 
 
@@ -41,18 +44,17 @@ public class MainWindowViewModel : ViewModelBase
             };
             var content = new FormUrlEncodedContent(values);
 
-            LastErrorText = "Start reques";
+            LastErrorText = $"Запрос к {ServerUrl}";
 
             try
             {
                 using HttpClient client = new();
-                var response = await client.PostAsync("https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize",
-                    content);
+                var response = await client.PostAsync(ServerUrl, content);
 
                 await Task.Delay(1000);
 
                 var responses = await response.Content.ReadAsStringAsync();
-                LastErrorText = $"Ok: {responses}";
+                LastErrorText = $"Ответ: {responses}";
             }
             catch (Exception e)
             {
@@ -81,6 +83,12 @@ public class MainWindowViewModel : ViewModelBase
     {
         get => _appealText;
         set => this.RaiseAndSetIfChanged(ref _appealText, value);
+    }
+
+    public string ServerUrl
+    {
+        get => _serverUrl;
+        set => this.RaiseAndSetIfChanged(ref _serverUrl, value);
     }
 
     public string LastErrorText

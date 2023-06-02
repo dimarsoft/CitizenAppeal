@@ -6,29 +6,41 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="CitizenAppealApp.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Обращение граждан">
+        Title="Обращение граждан. Версия 1.1">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto, *,Auto,Auto">
         <Label Content="Емайл:"/>
-        <TextBox Grid.Row="0" Grid.Column="1" 
+        <TextBox Grid.Row="0" Grid.Column="1"
+                 Margin="4"
                  Watermark="Укажите Ваш емайл"
                  Text="{Binding Email}"/>
         <Label Grid.Row="1" Grid.Column="0" Content="Текст обращения:"/>
         <TextBox Grid.Row="1" Grid.Column="1"
+                 Margin="4"
                  TextWrapping="Wrap"
                  AcceptsReturn="True"
                  Watermark="Введите текст обращения"
                  Text="{Binding AppealText}"/>
-        <Button Grid.Row="2" Grid.Column="0"
-                Grid.ColumnSpan="2"
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+              ColumnDefinitions="*,Auto, *">
+            <ProgressBar
                 Margin="4"
-                HorizontalAlignment="Center"
-                Content="Отправить"
-                IsEnabled="{Binding !IsSendInProgress}"
-                Command="{Binding SendAppealCommand}"/>
+                IsVisible="{Binding IsSendInProgress}"/>
+            <Button Grid.Column="1" 
+                    Margin="4"
+                    HorizontalAlignment="Center"
+                    Content="Отправить"
+                    IsEnabled="{Binding !IsSendInProgress}"
+                    Command="{Binding SendAppealCommand}"/>
+            <TextBox Grid.Row="0" Grid.Column="2"
+                     Watermark="Сервер АПИ"
+                     Margin="4"
+                     IsEnabled="{Binding !IsSendInProgress}"
+                     Text="{Binding ServerUrl}"/>
+        </Grid>
         <TextBox Grid.Row="3" Grid.Column="0"
                  Margin="4"
                  Grid.ColumnSpan="2"

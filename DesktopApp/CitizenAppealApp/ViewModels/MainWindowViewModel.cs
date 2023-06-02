@@ -15,6 +15,7 @@ public sealed class MainWindowViewModel : ReactiveObject
     private string _lastErrorText;
     private bool _isSendInProgress;
     private string _serverUrl;
+    private string _yourName;
 
     public ICommand SendAppealCommand { get; }
 
@@ -39,8 +40,9 @@ public sealed class MainWindowViewModel : ReactiveObject
             IsSendInProgress = true;
             var values = new Dictionary<string, string>
             {
+                { "name", YourName },
                 { "email", Email },
-                { "text", AppealText }
+                { "message", AppealText }
             };
             var content = new FormUrlEncodedContent(values);
 
@@ -49,6 +51,7 @@ public sealed class MainWindowViewModel : ReactiveObject
             try
             {
                 using HttpClient client = new();
+                
                 var response = await client.PostAsync(ServerUrl, content);
 
                 await Task.Delay(1000);
@@ -70,9 +73,15 @@ public sealed class MainWindowViewModel : ReactiveObject
             IsSendInProgress = false;
         }
     }
-    
+
+    public string YourName
+    {
+        get => _yourName;
+        set => this.RaiseAndSetIfChanged(ref _yourName, value);
+    }
+
     //[Required]
-   // [EmailAddress]
+    // [EmailAddress]
     public string Email
     {
         get => _email;

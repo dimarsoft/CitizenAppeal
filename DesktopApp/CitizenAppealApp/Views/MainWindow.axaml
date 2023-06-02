@@ -6,7 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="CitizenAppealApp.Views.MainWindow"
         Icon="/Assets/appeal-icon.ico"
-        Title="Обращение граждан. Версия 1.1">
+        Title="Обращение граждан. Версия 1.2">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>

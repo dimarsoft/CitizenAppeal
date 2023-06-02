@@ -1,0 +1,39 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:CitizenAppealApp.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="CitizenAppealApp.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Обращение граждан">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto, *,Auto,Auto">
+        <Label Content="Емайл:"/>
+        <TextBox Grid.Row="0" Grid.Column="1" 
+                 Watermark="Укажите Ваш емайл"
+                 Text="{Binding Email}"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Текст обращения:"/>
+        <TextBox Grid.Row="1" Grid.Column="1"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 Watermark="Введите текст обращения"
+                 Text="{Binding AppealText}"/>
+        <Button Grid.Row="2" Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="4"
+                HorizontalAlignment="Center"
+                Content="Отправить"
+                IsEnabled="{Binding !IsSendInProgress}"
+                Command="{Binding SendAppealCommand}"/>
+        <TextBox Grid.Row="3" Grid.Column="0"
+                 Margin="4"
+                 Grid.ColumnSpan="2"
+                 TextWrapping="Wrap"
+                 IsReadOnly="True"
+                 Text="{Binding LastErrorText}"/>
+    </Grid>
+</Window>

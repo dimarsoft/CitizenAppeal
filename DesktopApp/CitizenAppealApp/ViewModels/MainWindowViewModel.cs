@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 //using System.ComponentModel.DataAnnotations;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using CitizenAppealApp.Models;
 using ReactiveUI;
 
 namespace CitizenAppealApp.ViewModels;
@@ -16,14 +15,20 @@ public sealed class MainWindowViewModel : ReactiveObject
     private bool _isSendInProgress;
     private string _serverUrl;
     private string _yourName;
+    private readonly Settings _settings;
 
     public ICommand SendAppealCommand { get; }
 
     public MainWindowViewModel()
     {
+        // Команда для кнопки, она выполяется асинхронно
         SendAppealCommand = ReactiveCommand.CreateFromTask(SendAppealToServerAsync);
 
-        ServerUrl = "https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize";
+        // читаем настроку приложения
+        _settings = SettingsTools.Read();
+
+        //нам нужен путь к АПИ сервера
+        ServerUrl = _settings.ServerUrl;
     }
 
 
@@ -33,36 +38,22 @@ public sealed class MainWindowViewModel : ReactiveObject
         private set => this.RaiseAndSetIfChanged(ref _isSendInProgress, value);
     }
 
+    /// <summary>
+    /// Выполение команды при нажатии на кнопку отправить
+    /// </summary>
     private async Task SendAppealToServerAsync()
     {
         try
         {
+            // сохраним путь к АПИ
+            _settings.ServerUrl = ServerUrl;
+            SettingsTools.Save(_settings);
+            
             IsSendInProgress = true;
-            var values = new Dictionary<string, string>
-            {
-                { "name", YourName },
-                { "email", Email },
-                { "message", AppealText }
-            };
-            var content = new FormUrlEncodedContent(values);
+            RequesToServerModel requestModel = new(YourName, Email, AppealText, ServerUrl);
 
             LastErrorText = $"Запрос к {ServerUrl}";
-
-            try
-            {
-                using HttpClient client = new();
-                
-                var response = await client.PostAsync(ServerUrl, content);
-
-                await Task.Delay(1000);
-
-                var responses = await response.Content.ReadAsStringAsync();
-                LastErrorText = $"Ответ: {responses}";
-            }
-            catch (Exception e)
-            {
-                LastErrorText = $"Ошибка: {e.Message}";
-            }
+            LastErrorText = await requestModel.Send();
         }
         catch (Exception e)
         {

@@ -7,3 +7,7 @@
 Работает на Windows, Linux
 
 Среда разработки (IDE) Visual Studio 2022, Rider
+
+Avalonia - 11.0.9
+Net8
+C# 12

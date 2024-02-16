@@ -50,7 +50,7 @@ public sealed class MainWindowViewModel : ReactiveObject
             SettingsTools.Save(_settings);
             
             IsSendInProgress = true;
-            RequesToServerModel requestModel = new(YourName, Email, AppealText, ServerUrl);
+            RequestToServerModel requestModel = new(YourName, Email, AppealText, ServerUrl);
 
             LastErrorText = $"Запрос к {ServerUrl}";
             LastErrorText = await requestModel.Send();

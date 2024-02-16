@@ -11,7 +11,7 @@ namespace CitizenAppealApp.Models;
 /// </summary>
 public static class SettingsTools
 {
-    private static readonly XmlSerializerNamespaces EmptyNamespaces = new (new[] { new XmlQualifiedName() });
+    private static readonly XmlSerializerNamespaces EmptyNamespaces = new ([new XmlQualifiedName()]);
     /// <summary>
     /// Путь к файлу с настройкой приложения
     /// </summary>
@@ -45,10 +45,8 @@ public static class SettingsTools
     {
         var serializer = new XmlSerializer(typeof(Settings));
 
-        using var fs = new XmlTextWriter(SettingsFilePath, Encoding.UTF8)
-        {
-            Formatting = Formatting.Indented
-        };
+        using var fs = new XmlTextWriter(SettingsFilePath, Encoding.UTF8);
+        fs.Formatting = Formatting.Indented;
         serializer.Serialize(fs, settings, EmptyNamespaces);
     }
 }

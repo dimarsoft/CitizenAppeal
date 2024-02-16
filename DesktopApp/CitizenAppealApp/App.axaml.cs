@@ -6,7 +6,7 @@ using CitizenAppealApp.Views;
 
 namespace CitizenAppealApp;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {
